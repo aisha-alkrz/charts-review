@@ -1,0 +1,40 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>D3.js Chart Gallery</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Interactive D3.js Chart Gallery</h1>
+
+  <div id="main-container">
+    <div id="sidebar">
+      <h2>Categories</h2>
+      <div id="category-buttons"></div>
+    </div>
+
+    <div id="chart-area">
+      <h2>Chart</h2>
+      <div id="chart-container"></div>
+
+      <div id="data-hierarchy">
+        <h3>Data Structure</h3>
+        <pre id="data-display"></pre>
+      </div>
+
+      <div id="chart-details">
+        <h3>Chart Details</h3>
+        <div id="details-content">
+          <p>Select a chart to view its details here.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
