@@ -202,9 +202,9 @@
                 "colors": ["#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f", "#edc948", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab"] // Added more colors
             },
             "data": [
-                { "month": "January", "sales": 28000, "region": "East" },
-                { "month": "February", "sales": 32000, "region": "West" },
-                { "month": "March", "sales": 40000, "region": "North" }
+                { "month": "January", "sales": 8000, "region": "East" },
+                { "month": "February", "sales": 2000, "region": "West" },
+                { "month": "March", "sales": 4000, "region": "North" }
             ]
         };
 
@@ -418,7 +418,7 @@
             const tooltipKeys = config.mapping.key3;
             const size = Math.min(chartWidth, chartHeight); 
             const radius = size / 2;
-            const innerRadius = radius * 0.6;
+            const innerRadius = radius * 0;
 
             const svg = container
                 .append('svg')
@@ -467,7 +467,7 @@
             const legendItem = legend.selectAll('.legend-item')
                 .data(config.data)
                 .join('div')
-                .attr('class', 'legend-item flex items-center space-x-2');
+                .attr('class', 'legend-item flex items-center');
 
             legendItem.append('div')
                 .style('width', '12px')
