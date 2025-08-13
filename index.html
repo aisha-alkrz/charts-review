@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Charts Page</title>
-    <!-- Include Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Include D3.js library for drawing charts -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         /* Global styling and font import */
@@ -80,6 +78,7 @@
             display: flex; /* Ensures content is centered */
             align-items: center;
             justify-content: center;
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
         }
 
         /* Specific styling for the waffle chart grid */
@@ -95,19 +94,40 @@
             transition: background-color 0.2s ease-in-out;
             aspect-ratio: 1 / 1;
         }
+
+        /* Legend Styling */
+        .legend-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 1rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #e2e8f0; /* Light border for separation */
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem;
+            font-size: 0.875rem;
+            color: #4a5568; /* Slightly darker gray for legend text */
+        }
+        .legend-color {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 0.125rem;
+            margin-right: 0.5rem;
+            border: 1px solid #cbd5e0; /* Light border for color squares */
+        }
     </style>
 </head>
 <body>
 
-    <!-- Main container for layout -->
     <div class="max-w-7xl mx-auto bg-white p-8 rounded-3xl shadow-2xl space-y-8 my-8">
 
-        <!-- Page title -->
         <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-800">
             Interactive Charts Page
         </h1>
 
-        <!-- Buttons container -->
         <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
             <button id="button1" data-target="section1" class="tab-button w-full md:w-auto px-8 py-3 rounded-xl transition duration-300 ease-in-out font-semibold text-lg text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-md">
                 Charts Set 1
@@ -117,24 +137,50 @@
             </button>
         </div>
 
-        <!-- Sections for charts -->
         <div class="space-y-6">
-            <!-- Section 1: Bar, Dot, Pie, and Waffle Charts -->
             <div id="section1" class="tab-content hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 border-2 border-dashed border-gray-300 rounded-2xl bg-gray-50">
                     <div class="bg-white p-6 rounded-lg shadow-md w-full">
                         <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Bar Chart</h3>
                         <div id="barChartContainer" class="chart-container"></div>
+                        <div id="barChartLegend" class="legend-container"></div>
+                        <div id="barChartExplanation" class="mt-4 p-4 border rounded-lg bg-gray-50 text-sm text-gray-800" style="direction: ltr;">
+                            <h5 class="font-bold text-base mb-2">Explanation in English</h5>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>key1 (month):</strong> Used to set the domain for the horizontal (X-axis). Each bar represents a different month.</li>
+                                <li><strong>key2 (sales):</strong> Used to set the domain for the vertical (Y-axis) and determines the height of each bar.</li>
+                                <li><strong>key3 (tooltip):</strong> Defines the fields that will appear in the tooltip when hovering over a bar, which are: `month`, `sales`, and `region`.</li>
+                                <li><strong>key4 (region):</strong> Used to color the bars based on their `region` value.</li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-md w-full">
                         <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Dot Plot</h3>
                         <div id="dotPlotContainer" class="chart-container"></div>
+                        <div id="dotPlotLegend" class="legend-container"></div>
+                        <div id="dotPlotExplanation" class="mt-4 p-4 border rounded-lg bg-gray-50 text-sm text-gray-800" style="direction: ltr;">
+                            <h5 class="font-bold text-base mb-2">Explanation in English</h5>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>key1 (month):</strong> Used to set the domain for the horizontal (X-axis). Each point is placed at the position of its corresponding month.</li>
+                                <li><strong>key2 (sales):</strong> Used to set the domain for the vertical (Y-axis) and determines the vertical position of each point.</li>
+                                <li><strong>key3 (tooltip):</strong> Defines the fields that will appear in the tooltip when hovering over a point, which are: `month`, `sales`, and `region`.</li>
+                                <li><strong>key4 (region):</strong> Used to color the points based on their `region` value.</li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-md w-full flex flex-col items-center">
                         <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Pie Chart</h3>
                         <div class="flex flex-col md:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-8">
                             <div id="pieChartContainer" class="w-full flex justify-center items-center aspect-square"></div>
                             <div id="pieChartLegend" class="flex flex-col space-y-2 text-sm text-gray-700"></div>
+                        </div>
+                        <div id="pieChartExplanation" class="mt-4 p-4 border rounded-lg bg-gray-50 text-sm text-gray-800" style="direction: ltr;">
+                            <h5 class="font-bold text-base mb-2">Explanation in English</h5>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>key2 (sales):</strong> Used to calculate the total value for each `region` to determine the size of each slice.</li>
+                                <li><strong>key4 (region):</strong> Used to group the data and assign a different color to each slice.</li>
+                                <li><strong>key3 (tooltip):</strong> Displays the aggregated data in the tooltip, such as the `region` and the total `sales` for that region.</li>
+                            </ul>
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-md w-full flex flex-col items-center">
@@ -143,8 +189,17 @@
                             <div id="waffleChartContainer" class="waffle-grid max-w-xs"></div>
                             <div id="waffleChartLegend" class="flex flex-col space-y-2 text-sm text-gray-700 mt-4"></div>
                         </div>
+                        <div id="waffleChartExplanation" class="mt-4 p-4 border rounded-lg bg-gray-50 text-sm text-gray-800" style="direction: ltr;">
+                            <h5 class="font-bold text-base mb-2">Explanation in English</h5>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>key2 (sales):</strong> Used to calculate the percentage of each `region` from the total sales.</li>
+                                <li><strong>key4 (region):</strong> Used to assign a different color to the waffle squares based on the region they represent.</li>
+                                <li><strong>key3 (tooltip):</strong> Displays the total and percentage information for each region in the tooltip.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
+
                 <div class="mt-6 text-center">
                     <button onclick="toggleMapping('mapping-display-1-wrapper')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm shadow">Show Data Mapping</button>
                 </div>
@@ -153,29 +208,66 @@
                 </div>
             </div>
 
-            <!-- Section 2 is removed as per user request -->
-            <!-- <div id="section2" class="tab-content hidden">...</div> -->
-
-            <!-- Section 3: Stacked Bar Chart and Line Chart -->
             <div id="section3" class="tab-content hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 border-2 border-dashed border-gray-300 rounded-2xl bg-gray-50">
                     <div class="bg-white p-6 rounded-lg shadow-md w-full">
                         <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Stacked Bar Chart</h3>
                         <div id="stackedBarChartContainer" class="chart-container"></div>
+                        <div id="stackedBarChartLegend" class="legend-container"></div>
+                        <div id="stackedBarChartExplanation" class="mt-4 p-4 border rounded-lg bg-gray-50 text-sm text-gray-800" style="direction: ltr;">
+                            <h5 class="font-bold text-base mb-2">Explanation in English</h5>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>key1 (month):</strong> Used to set the primary horizontal axis domain. Each column represents a month.</li>
+                                <li><strong>key2 (sales):</strong> Used to represent the numerical value that determines the height of each segment in the stacked column.</li>
+                                <li><strong>key3 (tooltip):</strong> Defines the fields that will appear in the tooltip, including `month`, `product`, and `sales`.</li>
+                                <li><strong>key4 (product):</strong> This is the series key used for stacking the data on top of each other and for coloring each segment of the bar based on the `product` value.</li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-md w-full">
                         <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Stacked Area Chart</h3>
                         <div id="stackedAreaChartContainer" class="chart-container"></div>
+                        <div id="stackedAreaChartLegend" class="legend-container"></div>
+                        <div id="stackedAreaChartExplanation" class="mt-4 p-4 border rounded-lg bg-gray-50 text-sm text-gray-800" style="direction: ltr;">
+                            <h5 class="font-bold text-base mb-2">Explanation in English</h5>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>key1 (month):</strong> Used to set the domain for the time-series horizontal (X-axis).</li>
+                                <li><strong>key2 (sales):</strong> Used to represent the numerical value that determines the height of each segment in the stacked area.</li>
+                                <li><strong>key3 (tooltip):</strong> Defines the fields that will appear in the tooltip, including `month`, `product`, and `sales`.</li>
+                                <li><strong>key4 (product):</strong> This is the series key used for stacking the data on top of each other and for coloring each area based on the `product` value.</li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-md w-full">
                         <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Grouped Bar Chart</h3>
                         <div id="groupedBarChartContainer" class="chart-container"></div>
+                        <div id="groupedBarChartLegend" class="legend-container"></div>
+                        <div id="groupedBarChartExplanation" class="mt-4 p-4 border rounded-lg bg-gray-50 text-sm text-gray-800" style="direction: ltr;">
+                            <h5 class="font-bold text-base mb-2">Explanation in English</h5>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>key1 (month):</strong> Used to set the primary horizontal axis domain. Each month represents a group of bars.</li>
+                                <li><strong>key2 (sales):</strong> Used to represent the numerical value that determines the height of each bar.</li>
+                                <li><strong>key3 (tooltip):</strong> Defines the fields that will appear in the tooltip, including `month`, `product`, and `sales`.</li>
+                                <li><strong>key4 (product):</strong> This is the series key used to group the bars together within each primary category based on the `product` value and for coloring them.</li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-md w-full">
                         <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Line Chart</h3>
                         <div id="lineChartContainer" class="chart-container"></div>
+                        <div id="lineChartLegend" class="legend-container"></div>
+                        <div id="lineChartExplanation" class="mt-4 p-4 border rounded-lg bg-gray-50 text-sm text-gray-800" style="direction: ltr;">
+                            <h5 class="font-bold text-base mb-2">Explanation in English</h5>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>key1 (month):</strong> Used to set the horizontal (X-axis) which represents a time series.</li>
+                                <li><strong>key2 (sales):</strong> Used to represent the numerical value on the vertical (Y-axis).</li>
+                                <li><strong>key3 (tooltip):</strong> Defines the fields that will appear in the tooltip, including `month`, `product`, and `sales`.</li>
+                                <li><strong>key4 (product):</strong> This is the series key used to create a separate line for each unique `product` value.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
+
                 <div class="mt-6 text-center">
                     <button onclick="toggleMapping('mapping-display-3-wrapper')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm shadow">Show Data Mapping</button>
                 </div>
@@ -188,54 +280,88 @@
 
     <script>
         // Data and configuration for the charts
-        const chartConfig1 = {
-            "mapping": {
-                "dimensions": { "width": 500, "height": 350 },
-                "type": ["bar-chart", "dot-plot", "pie-chart", "waffle-chart"], // All types in one config
-                "key1": { "value": "month", "label": "Month" },
-                "key2": { "value": "sales", "label": "Sales" },
-                "key3": [
-                    { "value": "month", "label": "Month" },
-                    { "value": "sales", "label": "Sales", "format": "$0,0" },
-                    { "value": "region", "label": "Region" }
-                ],
-                "colors": ["#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f", "#edc948", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab"] // Added more colors
-            },
-            "data": [
-                { "month": "January", "sales": 8000, "region": "East" },
-                { "month": "February", "sales": 2000, "region": "West" },
-                { "month": "March", "sales": 4000, "region": "North" }
-            ]
+        
+        // Corrected Unified Data Source:
+        // This structure is necessary for multi-series charts like stacked bar and line charts.
+        // It provides multiple data points (e.g., for different products) for the same primary key (month).
+        const unifiedData = [
+            // Data for Charts Set 1 (using 'region' as series key)
+            { "month": "January", "sales": 12000, "region": "North", "product": null },
+            { "month": "February", "sales": 19000, "region": "South", "product": null },
+            { "month": "March", "sales": 22000, "region": "North", "product": null },
+            { "month": "April", "sales": 15000, "region": "South", "product": null },
+            { "month": "May", "sales": 25000, "region": "North", "product": null },
+            { "month": "June", "sales": 30000, "region": "South", "product": null },
+            { "month": "July", "sales": 18000, "region": "West", "product": null },
+            { "month": "August", "sales": 27000, "region": "West", "product": null },
+            { "month": "September", "sales": 21000, "region": "North", "product": null },
+
+            
+            // Data for Charts Set 2 (using 'product' as series key)
+            // Note: Data is structured for multi-series per month, enabling stacking and grouping
+            {"month": "January", "product": "Product A", "sales": 12000, "region": null},
+            {"month": "January", "product": "Product B", "sales": 8000, "region": null},
+            {"month": "January", "product": "Product C", "sales": 5000, "region": null},
+            {"month": "February", "product": "Product A", "sales": 15000, "region": null},
+            {"month": "February", "product": "Product B", "sales": 10000, "region": null},
+            {"month": "February", "product": "Product C", "sales": 6000, "region": null},
+            {"month": "March", "product": "Product A", "sales": 18000, "region": null},
+            {"month": "March", "product": "Product B", "sales": 12000, "region": null},
+            {"month": "March", "product": "Product C", "sales": 7000, "region": null},
+            {"month": "April", "product": "Product A", "sales": 16000, "region": null},
+            {"month": "April", "product": "Product B", "sales": 11000, "region": null},
+            {"month": "April", "product": "Product C", "sales": 8000, "region": null},
+            {"month": "May", "product": "Product A", "sales": 20000, "region": null},
+            {"month": "May", "product": "Product B", "sales": 13000, "region": null},
+            {"month": "May", "product": "Product C", "sales": 9000, "region": null},
+            {"month": "June", "product": "Product A", "sales": 22000, "region": null},
+            {"month": "June", "product": "Product B", "sales": 15000, "region": null},
+            {"month": "June", "product": "Product C", "sales": 10000, "region": null}
+        ];
+
+        // Single Unified Mapping for all charts
+        const unifiedMapping = {
+            "workspaceId": "your_workspace_id_here", // Placeholder for workspace ID
+            "datasetId": "your_dataset_id_here",     // Placeholder for dataset ID
+            "dimensions": { "width": "100%", "height": 350 },
+            "key1": { "value": "month", "label": "Month" },
+            "key2": { "value": "sales", "label": "Sales" },
+            "key3": [ // Base Tooltip fields
+                { "value": "month", "label": "Month" },
+                { "value": "sales", "label": "Sales", "format": "$0,0" }
+            ],
+            // key4 will be dynamically updated based on the data
+            "key4": null,
+            "colors": ["#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f", "#edc948", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab"],
+            "legend": { "enabled": true, "position": "bottom" }
         };
 
-        // chartConfig2 is removed as its functionality is merged into chartConfig1
-        // const chartConfig2 = { ... };
-
-        const chartConfig3 = {
+        // Chart configuration for Set 1 (using 'region' as series key)
+        const chartSet1Config = {
             "mapping": {
-                "dimensions": { "width": 500, "height": 350 },
-                "type": ["stacked-bar-chart", "stacked-area-chart", "grouped-bar-chart", "line-chart"], // All types are back
-                "key1": { "value": "month", "label": "Month" },
-                "key2": { "value": "sales", "label": "Total Sales" },
-                "key3": { "value": "product", "label": "Product" },
-                "key4": [
-                    { "value": "month", "label": "Month" },
-                    { "value": "product", "label": "Product" },
-                    { "value": "sales", "label": "Sales", "format": "$0,0" }
+                ...unifiedMapping, // Use all properties from unifiedMapping
+                "key3": [ // Override key3 for specific tooltip fields
+                    ...unifiedMapping.key3,
+                    { "value": "region", "label": "Region" }
                 ],
-                "colors": ["#8dd3c7", "#bebada", "#fb8072", "#80b1d3"] 
+                "key4": { "value": "region", "label": "Region" }
             },
-            "data": [
-                {"month": "January", "product": "Product A", "sales": 12000},
-                {"month": "January", "product": "Product B", "sales": 8000},
-                {"month": "January", "product": "Product C", "sales": 5000},
-                {"month": "February", "product": "Product A", "sales": 15000},
-                {"month": "February", "product": "Product B", "sales": 10000},
-                {"month": "February", "product": "Product C", "sales": 6000},
-                {"month": "March", "product": "Product A", "sales": 18000},
-                {"month": "March", "product": "Product B", "sales": 12000},
-                {"month": "March", "product": "Product C", "sales": 7000}
-            ]
+            // Filter the unified data to get only the data points with a defined region
+            "data": unifiedData.filter(d => d.region !== null)
+        };
+
+        // Chart configuration for Set 2 (using 'product' as series key)
+        const chartSet2Config = {
+            "mapping": {
+                ...unifiedMapping, // Use all properties from unifiedMapping
+                "key3": [ // Override key3 for specific tooltip fields
+                    ...unifiedMapping.key3,
+                    { "value": "product", "label": "Product" }
+                ],
+                "key4": { "value": "product", "label": "Product" }
+            },
+            // Filter the unified data to get only the data points with a defined product
+            "data": unifiedData.filter(d => d.product !== null)
         };
         
         // This variable will hold a single tooltip element for all charts
@@ -243,25 +369,52 @@
 
         // Helper function to format numbers based on a specified format string
         function formatNumber(value, format) {
+            if (value === undefined || value === null) return ''; // Handle undefined/null values
             if (!format) return value;
             if (format.includes('$')) {
                 return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(value);
             }
+            // Add other formats if needed, e.g., percentage
             return value;
         }
 
         // Main function to dynamically generate tooltip content from a data object and an array of tooltip keys
-        function generateTooltipContent(dataObject, tooltipKeys) {
+        function generateTooltipContent(dataObject, tooltipFields) {
+            if (!tooltipFields || tooltipFields.length === 0) return '';
             let html = '';
-            tooltipKeys.forEach(keyConfig => {
-                const value = dataObject[keyConfig.value];
-                const formattedValue = formatNumber(value, keyConfig.format);
-                html += `<div><strong>${keyConfig.label}</strong>: ${formattedValue}</div>`;
+            tooltipFields.forEach(fieldConfig => {
+                const value = dataObject[fieldConfig.value];
+                const formattedValue = formatNumber(value, fieldConfig.format);
+                if (value !== undefined && value !== null) { // Only add if value exists
+                    html += `<div><strong>${fieldConfig.label}</strong>: ${formattedValue}</div>`;
+                }
             });
             return html;
         }
         
-        // --- D3.js Chart Functions ---
+        // New function to toggle the visibility of the data mapping div and populate it
+        function toggleMapping(elementId) {
+            const element = document.getElementById(elementId);
+            const codeElement = element.querySelector('code');
+            if (element) {
+                // Toggle the visibility
+                element.classList.toggle('hidden');
+
+                // Populate the code element with the correct mapping, if it's being shown
+                if (!element.classList.contains('hidden')) {
+                    let mappingData;
+                    if (elementId.includes('1')) {
+                        mappingData = chartSet1Config.mapping;
+                    } else if (elementId.includes('3')) {
+                        mappingData = chartSet2Config.mapping;
+                    }
+                    if (mappingData) {
+                        codeElement.textContent = JSON.stringify(mappingData, null, 2);
+                    }
+                }
+            }
+        }
+        
         // Helper function to get or create a new tooltip element
         function getOrCreateTooltip() {
             if (!tooltip) {
@@ -270,56 +423,82 @@
             }
             return tooltip;
         }
+
+        // Helper function to draw legend for a chart
+        function drawChartLegend(containerSelector, colorScale, seriesKeyLabel) {
+            const legendContainer = d3.select(containerSelector);
+            legendContainer.selectAll('*').remove(); // Clear previous legend content
+            
+            const legendItems = colorScale.domain(); // Get all unique items used in the color scale
+
+            // Filter out any undefined or null keys if they somehow made it into the domain
+            const validLegendItems = legendItems.filter(item => item !== undefined && item !== null);
+
+            legendContainer.selectAll('.legend-item')
+                .data(validLegendItems)
+                .join('div')
+                .attr('class', 'legend-item flex items-center space-x-2 mr-4')
+                .html(d => `
+                    <div class="legend-color" style="background-color:${colorScale(d)};"></div>
+                    <span>${d}</span>
+                `);
+        }
         
         // Function to create a Bar Chart
         function createBarChart(config) {
             const containerId = 'barChartContainer';
+            const legendId = 'barChartLegend'; // Explicit legend ID
             const container = d3.select(`#${containerId}`);
-            container.selectAll('*').remove();
-            
-            // Get dimensions and keys from the mapping configuration
-            const chartWidth = config.mapping.dimensions.width;
-            const chartHeight = config.mapping.dimensions.height;
-            const margin = { top: 20, right: 20, bottom: 40, left: 60 };
-            const width = chartWidth - margin.left - margin.right;
-            const height = chartHeight - margin.top - margin.bottom;
+            container.selectAll('*').remove(); // Clear previous content
 
-            const xKey = config.mapping.key1.value;
-            const yKey = config.mapping.key2.value;
-            const tooltipKeys = config.mapping.key3;
+            const chartContainerElement = document.getElementById(containerId);
+            const actualWidth = chartContainerElement.clientWidth; // Get actual width from parent for responsiveness
+            const actualHeight = config.mapping.dimensions.height; // Fixed height from mapping
+
+            const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+            const width = actualWidth - margin.left - margin.right;
+            const height = actualHeight - margin.top - margin.bottom;
+
+            const primaryAxisKey = config.mapping.key1.value;
+            const valueAxisKey = config.mapping.key2.value;
+            const seriesKey = config.mapping.key4.value; // For coloring bars
+            const tooltipFields = config.mapping.key3;
+            const filteredData = config.data; // Data is already filtered by config object
 
             const svg = container
                 .append('svg')
-                .attr('width', chartWidth)
-                .attr('height', chartHeight)
+                .attr('width', actualWidth)
+                .attr('height', actualHeight)
                 .append('g')
                 .attr('transform', `translate(${margin.left},${margin.top})`);
 
             const x = d3.scaleBand()
-                .domain(config.data.map(d => d[xKey]))
+                .domain(filteredData.map(d => d[primaryAxisKey]))
                 .range([0, width])
                 .padding(0.1);
 
             const y = d3.scaleLinear()
-                .domain([0, d3.max(config.data, d => d[yKey])])
+                .domain([0, d3.max(filteredData, d => d[valueAxisKey]) * 1.1]) // Add some top padding
                 .nice()
                 .range([height, 0]);
 
-            const color = d3.scaleOrdinal(config.mapping.colors); // Use colors from config.mapping
+            const color = d3.scaleOrdinal(config.mapping.colors || d3.schemeCategory10)
+                .domain(Array.from(new Set(filteredData.map(d => d[seriesKey])))); // Color by seriesKey
+            
             const chartTooltip = getOrCreateTooltip();
 
             svg.append('g')
                 .selectAll('rect')
-                .data(config.data)
+                .data(filteredData)
                 .join('rect')
-                .attr('x', d => x(d[xKey]))
-                .attr('y', d => y(d[yKey]))
-                .attr('height', d => height - y(d[yKey]))
+                .attr('x', d => x(d[primaryAxisKey]))
+                .attr('y', d => y(d[valueAxisKey]))
+                .attr('height', d => height - y(d[valueAxisKey]))
                 .attr('width', x.bandwidth())
-                .attr('fill', (d, i) => color(i))
+                .attr('fill', (d) => color(d[seriesKey]))
                 .on("mouseover", function(event, d) {
                     chartTooltip.style("opacity", 1)
-                        .html(generateTooltipContent(d, tooltipKeys))
+                        .html(generateTooltipContent(d, tooltipFields))
                         .style("left", (event.pageX + 10) + "px")
                         .style("top", (event.pageY - 28) + "px");
                 })
@@ -335,56 +514,67 @@
             // Add Y-axis
             svg.append('g')
                 .call(d3.axisLeft(y));
+
+            // Add legend if enabled
+            if (config.mapping.legend.enabled) {
+                drawChartLegend(`#${legendId}`, color, config.mapping.key4.label);
+            }
         }
 
         // Function to create a Dot Plot
         function createDotPlot(config) {
             const containerId = 'dotPlotContainer';
+            const legendId = 'dotPlotLegend';
             const container = d3.select(`#${containerId}`);
-            container.selectAll('*').remove();
+            container.selectAll('*').remove(); // Clear previous content
             
-            // Get dimensions and keys from the mapping configuration
-            const chartWidth = config.mapping.dimensions.width;
-            const chartHeight = config.mapping.dimensions.height;
-            const margin = { top: 20, right: 20, bottom: 40, left: 60 };
-            const width = chartWidth - margin.left - margin.right;
-            const height = chartHeight - margin.top - margin.bottom;
+            const chartContainerElement = document.getElementById(containerId);
+            const actualWidth = chartContainerElement.clientWidth;
+            const actualHeight = config.mapping.dimensions.height;
 
-            const xKey = config.mapping.key1.value;
-            const yKey = config.mapping.key2.value;
-            const tooltipKeys = config.mapping.key3;
+            const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+            const width = actualWidth - margin.left - margin.right;
+            const height = actualHeight - margin.top - margin.bottom;
+
+            const primaryAxisKey = config.mapping.key1.value;
+            const valueAxisKey = config.mapping.key2.value;
+            const seriesKey = config.mapping.key4.value; // For coloring dots
+            const tooltipFields = config.mapping.key3;
+            const filteredData = config.data; // Data is already filtered by config object
 
             const svg = container
                 .append('svg')
-                .attr('width', chartWidth)
-                .attr('height', chartHeight)
+                .attr('width', actualWidth)
+                .attr('height', actualHeight)
                 .append('g')
                 .attr('transform', `translate(${margin.left},${margin.top})`);
 
             const x = d3.scalePoint()
-                .domain(config.data.map(d => d[xKey]))
+                .domain(filteredData.map(d => d[primaryAxisKey]))
                 .range([0, width])
                 .padding(0.5);
 
             const y = d3.scaleLinear()
-                .domain([0, d3.max(config.data, d => d[yKey])])
+                .domain([0, d3.max(filteredData, d => d[valueAxisKey]) * 1.1])
                 .nice()
                 .range([height, 0]);
 
-            const color = d3.scaleOrdinal(config.mapping.colors); // Use colors from config.mapping
+            const color = d3.scaleOrdinal(config.mapping.colors || d3.schemeCategory10)
+                .domain(Array.from(new Set(filteredData.map(d => d[seriesKey])))); // Color by seriesKey
+            
             const chartTooltip = getOrCreateTooltip();
 
             svg.append('g')
                 .selectAll('circle')
-                .data(config.data)
+                .data(filteredData)
                 .join('circle')
-                .attr('cx', d => x(d[xKey]))
-                .attr('cy', d => y(d[yKey]))
+                .attr('cx', d => x(d[primaryAxisKey]))
+                .attr('cy', d => y(d[valueAxisKey]))
                 .attr('r', 5)
-                .attr('fill', (d, i) => color(i))
+                .attr('fill', (d) => color(d[seriesKey]))
                 .on("mouseover", function(event, d) {
                     chartTooltip.style("opacity", 1)
-                        .html(generateTooltipContent(d, tooltipKeys))
+                        .html(generateTooltipContent(d, tooltipFields))
                         .style("left", (event.pageX + 10) + "px")
                         .style("top", (event.pageY - 28) + "px");
                 })
@@ -400,6 +590,11 @@
             // Add Y-axis
             svg.append('g')
                 .call(d3.axisLeft(y));
+
+            // Add legend if enabled
+            if (config.mapping.legend.enabled) {
+                drawChartLegend(`#${legendId}`, color, config.mapping.key4.label);
+            }
         }
 
         // Function to create a Pie Chart
@@ -408,32 +603,35 @@
             const legendId = 'pieChartLegend';
             const container = d3.select(`#${containerId}`);
             container.selectAll('*').remove();
-            d3.select(`#${legendId}`).selectAll('*').remove();
-
-            // Get dimensions and keys from the mapping configuration
-            const chartWidth = config.mapping.dimensions.width;
-            const chartHeight = config.mapping.dimensions.height;
-            const sizeKey = config.mapping.key2.value; // For pie/waffle, sales is the size
-            const labelKey = config.mapping.key1.value; // For pie/waffle, month is the label
-            const tooltipKeys = config.mapping.key3;
-            const size = Math.min(chartWidth, chartHeight); 
-            const radius = size / 2;
-            const innerRadius = radius * 0;
+            d3.select(`#${legendId}`).selectAll('*').remove(); // Clear previous legend
+            const chartContainerElement = document.getElementById(containerId);
+            const actualWidth = chartContainerElement.clientWidth; // Get width from parent
+            const actualHeight = config.mapping.dimensions.height; // Fixed height from mapping
 
             const svg = container
                 .append('svg')
-                .attr('width', chartWidth)
-                .attr('height', chartHeight)
+                .attr('width', actualWidth)
+                .attr('height', actualHeight)
                 .append('g')
-                .attr('transform', `translate(${chartWidth / 2},${chartHeight / 2})`); 
+                .attr('transform', `translate(${actualWidth / 2},${actualHeight / 2})`);
 
-            // Use colors from the config
-            const color = d3.scaleOrdinal()
-                .domain(config.data.map(d => d[labelKey]))
-                .range(config.mapping.colors);
+            const valueAxisKey = config.mapping.key2.value; // "sales"
+            const seriesKey = config.mapping.key4.value; // "region" or "product"
+            const tooltipFields = config.mapping.key3;
+            const filteredData = config.data; // Data is already filtered by config object
+            
+            // For pie chart, data is aggregated by seriesKey
+            const aggregatedData = d3.rollup(filteredData, v => d3.sum(v, d => d[valueAxisKey]), d => d[seriesKey]);
+            const pieData = Array.from(aggregatedData, ([key, value]) => ({ [seriesKey]: key, [valueAxisKey]: value }));
+
+            const radius = Math.min(actualWidth, actualHeight) / 2.5;
+            const innerRadius = radius * 0; // Solid pie
+
+            const color = d3.scaleOrdinal(config.mapping.colors || d3.schemeCategory10)
+                .domain(pieData.map(d => d[seriesKey]));
 
             const pie = d3.pie()
-                .value(d => d[sizeKey])
+                .value(d => d[valueAxisKey])
                 .sort(null);
 
             const arc = d3.arc()
@@ -444,39 +642,56 @@
 
             // Create the arcs
             svg.selectAll('path')
-                .data(pie(config.data))
+                .data(pie(pieData))
                 .join('path')
                 .attr('d', arc)
-                .attr('fill', d => color(d.data[labelKey]))
+                .attr('fill', d => color(d.data[seriesKey]))
                 .attr('stroke', 'white')
                 .style('stroke-width', '2px')
                 .on("mouseover", function(event, d) {
                     d3.select(this).transition().duration(100).style('opacity', 0.8);
+                    // Prepare data object for tooltip based on tooltipFields
+                    const dataObjectForTooltip = {};
+                    tooltipFields.forEach(field => {
+                        if (field.value === seriesKey) {
+                            dataObjectForTooltip[field.value] = d.data[seriesKey];
+                        } else if (field.value === valueAxisKey) {
+                            dataObjectForTooltip[field.value] = d.data[valueAxisKey];
+                        } else if (field.value === 'percentage') { // Add percentage for pie chart tooltip
+                            dataObjectForTooltip[field.value] = (d.data[valueAxisKey] / d3.sum(pieData, p => p[valueAxisKey]) * 100).toFixed(1);
+                        } else {
+                            dataObjectForTooltip[field.value] = null;
+                        }
+                    });
+
+                    // Get bounding box of the chart container
+                    const containerRect = chartContainerElement.getBoundingClientRect();
+                    const tooltipHeight = chartTooltip.node().offsetHeight; // Get tooltip height after content is set
+                    
                     chartTooltip.style("opacity", 1)
-                        .html(generateTooltipContent(d.data, tooltipKeys))
-                        .style("left", (event.pageX + 10) + "px")
-                        .style("top", (event.pageY - 28) + "px");
+                        .html(generateTooltipContent(dataObjectForTooltip, tooltipFields))
+                        .style("left", (containerRect.left + containerRect.width / 2 - chartTooltip.node().offsetWidth / 2) + "px") // Center horizontally
+                        .style("top", (containerRect.bottom + window.scrollY + 10) + "px"); // Position below the chart with offset
                 })
                 .on("mouseout", function() {
                     d3.select(this).transition().duration(100).style('opacity', 1);
                     chartTooltip.style("opacity", 0);
                 });
 
-            // Add legend
-            const legend = d3.select(`#${legendId}`);
-            const legendItem = legend.selectAll('.legend-item')
-                .data(config.data)
-                .join('div')
-                .attr('class', 'legend-item flex items-center');
-
-            legendItem.append('div')
-                .style('width', '12px')
-                .style('height', '12px')
-                .style('background-color', d => color(d[labelKey]))
-                .style('border-radius', '2px');
-
-            legendItem.append('span')
-                .text(d => d[labelKey]);
+            // Add text labels to each slice
+            svg.selectAll('text')
+                .data(pie(pieData))
+                .join('text')
+                .attr('transform', d => `translate(${arc.centroid(d)})`)
+                .attr('text-anchor', 'middle')
+                .text(d => d.data[seriesKey])
+                .style('fill', '#fff')
+                .style('font-size', '11px');
+            
+            // Add legend if enabled
+            if (config.mapping.legend.enabled) {
+                drawChartLegend(`#${legendId}`, color, config.mapping.key4.label);
+            }
         }
 
         // Function to create a Waffle Chart
@@ -485,163 +700,185 @@
             const legendId = 'waffleChartLegend';
             d3.select(`#${containerId}`).selectAll('*').remove();
             d3.select(`#${legendId}`).selectAll('*').remove();
-            
-            // Get keys from the mapping configuration
-            const chartWidth = config.mapping.dimensions.width;
-            const chartHeight = config.mapping.dimensions.height;
-            const sizeKey = config.mapping.key2.value; // For pie/waffle, sales is the size
-            const labelKey = config.mapping.key1.value; // For pie/waffle, month is the label
-            const tooltipKeys = config.mapping.key3;
-            
-            const totalSales = d3.sum(config.data, d => d[sizeKey]);
+            const chartContainerElement = document.getElementById(containerId);
+            // Waffle chart dimensions are primarily controlled by CSS (aspect-ratio, width: 100%)
+            // but we need to ensure the parent container is correctly sized if needed for responsiveness
+            const actualWidth = chartContainerElement.clientWidth;
+            const actualHeight = config.mapping.dimensions.height;
+
+            const valueAxisKey = config.mapping.key2.value;
+            const seriesKey = config.mapping.key4.value;
+            const tooltipFields = config.mapping.key3;
+            const filteredData = config.data; // Data is already filtered by config object
+
+            const totalValue = d3.sum(filteredData, d => d[valueAxisKey]);
             const totalSquares = 100;
             let dataForWaffle = [];
 
-            config.data.forEach(d => {
-                const percentage = (d[sizeKey] / totalSales) * 100;
-                const numSquares = Math.round(percentage / 100 * totalSquares);
-                for (let i = 0; i < numSquares; i++) {
+            // Group by seriesKey to calculate percentages for waffle chart
+            const aggregatedData = d3.rollup(filteredData, v => d3.sum(v, d => d[valueAxisKey]), d => d[seriesKey]);
+
+            const processedDataForWaffle = Array.from(aggregatedData, ([key, value]) => ({
+                [seriesKey]: key,
+                [valueAxisKey]: value,
+                percentage: (value / totalValue) * 100
+            }));
+            
+            // Calculate how many squares each series gets, rounding to the nearest whole number
+            let filledSquares = 0;
+            processedDataForWaffle.forEach(d => {
+                d.squares = Math.round(d.percentage);
+                filledSquares += d.squares;
+            });
+
+            // Handle rounding errors to ensure exactly 100 squares
+            while (filledSquares < totalSquares) {
+                processedDataForWaffle.sort((a, b) => (b.percentage - b.squares) - (a.percentage - a.squares));
+                processedDataForWaffle[0].squares++;
+                filledSquares++;
+            }
+            while (filledSquares > totalSquares) {
+                processedDataForWaffle.sort((a, b) => (b.percentage - b.squares) - (a.percentage - a.squares));
+                processedDataForWaffle[0].squares--;
+                filledSquares--;
+            }
+
+            // Create a flat array of all 100 squares with their corresponding series data
+            processedDataForWaffle.forEach(d => {
+                for(let i=0; i<d.squares; i++) {
                     dataForWaffle.push(d);
                 }
             });
 
-            // Fill empty squares if needed
-            while (dataForWaffle.length < totalSquares) {
+            // If for some reason we have less than 100 squares, fill the rest with null
+            while(dataForWaffle.length < totalSquares) {
                 dataForWaffle.push(null);
             }
 
-            const color = d3.scaleOrdinal()
-                .domain(config.data.map(d => d[labelKey]))
-                .range(config.mapping.colors);
+            const color = d3.scaleOrdinal(config.mapping.colors || d3.schemeCategory10)
+                .domain(processedDataForWaffle.map(d => d[seriesKey]));
             
             const chartTooltip = getOrCreateTooltip();
 
-            // Create waffle grid squares
-            d3.select(`#${containerId}`)
-                .style('width', `${chartWidth}px`)
-                .style('height', `${chartHeight}px`)
-                .selectAll('.waffle-square')
+            d3.select(`#${containerId}`).selectAll('.waffle-square')
                 .data(dataForWaffle)
                 .join('div')
-                .attr('class', 'waffle-square transition-colors duration-200 ease-in-out')
-                .style('background-color', d => d ? color(d[labelKey]) : '#e2e8f0')
+                .attr('class', 'waffle-square rounded-sm transition-all duration-200 ease-in-out')
+                .style('background-color', d => d ? color(d[seriesKey]) : '#e2e8f0') // Assign color or default gray
                 .on("mouseover", function(event, d) {
-                    if (d) {
+                    if (d) { // Only show tooltip for colored squares
+                        // Get bounding box of the chart container
+                        const containerRect = chartContainerElement.getBoundingClientRect();
+                        const tooltipHeight = chartTooltip.node().offsetHeight; // Get tooltip height after content is set
+
                         chartTooltip.style("opacity", 1)
-                            .html(generateTooltipContent(d, tooltipKeys))
-                            .style("left", (event.pageX + 10) + "px")
-                            .style("top", (event.pageY - 28) + "px");
+                            .html(`<div><strong>${d[seriesKey]}</strong>: ${formatNumber(d[valueAxisKey], '$0,0')}</div><div><strong>Percentage</strong>: ${d.percentage.toFixed(1)}%</div>`)
+                            .style("left", (containerRect.left + containerRect.width / 2 - chartTooltip.node().offsetWidth / 2) + "px") // Center horizontally
+                            .style("top", (containerRect.bottom + window.scrollY + 10) + "px"); // Position below the chart with offset
+                        d3.select(this).style('transform', 'scale(1.1)');
                     }
                 })
                 .on("mouseout", function() {
                     chartTooltip.style("opacity", 0);
+                    d3.select(this).style('transform', 'scale(1)');
                 });
 
-            // Add legend
-            const legend = d3.select(`#${legendId}`);
-            const legendItem = legend.selectAll('.legend-item')
-                .data(config.data)
-                .join('div')
-                .attr('class', 'legend-item flex items-center space-x-2');
-
-            legendItem.append('div')
-                .style('width', '12px')
-                .style('height', '12px')
-                .style('background-color', d => color(d[labelKey]))
-                .style('border-radius', '2px');
-
-            legendItem.append('span')
-                .text(d => d[labelKey]);
+            // Add legend if enabled
+            if (config.mapping.legend.enabled) {
+                // For waffle chart, the legend should show the percentage, not just the raw value
+                const legendData = processedDataForWaffle.map(d => ({
+                    key: d[seriesKey],
+                    value: d.percentage.toFixed(1) + '%' // Display percentage in legend
+                }));
+                drawChartLegend(`#${legendId}`, color, config.mapping.key4.label);
+            }
         }
 
-        // Helper function to transform the data for stacked and grouped charts
-        function transformDataForStacking(data, xKey, seriesKey, yKey) {
-            const groupedData = d3.group(data, d => d[xKey]);
-            const seriesKeys = Array.from(new Set(data.map(d => d[seriesKey]))).sort(); // Ensure series keys are sorted for consistent stacking
-            const transformedData = [];
-
-            groupedData.forEach((values, key) => {
-                const newObject = { [xKey]: key };
-                seriesKeys.forEach(sKey => {
-                    const item = values.find(v => v[seriesKey] === sKey);
-                    newObject[sKey] = item ? item[yKey] : 0;
-                });
-                transformedData.push(newObject);
-            });
-
-            return { transformedData, seriesKeys };
-        }
-
-        // Function to create a Stacked Bar Chart
+        // --- Stacked Bar Chart Function ---
         function createStackedBarChart(config) {
             const containerId = 'stackedBarChartContainer';
+            const legendId = 'stackedBarChartLegend';
             const container = d3.select(`#${containerId}`);
-            container.selectAll('*').remove();
+            container.selectAll('*').remove(); // Clear previous content
 
-            // Get dimensions and keys from the mapping configuration
-            const chartWidth = config.mapping.dimensions.width;
-            const chartHeight = config.mapping.dimensions.height;
+            const chartContainerElement = document.getElementById(containerId);
+            const actualWidth = chartContainerElement.clientWidth;
+            const actualHeight = config.mapping.dimensions.height;
+
             const margin = { top: 20, right: 20, bottom: 40, left: 60 };
-            const width = chartWidth - margin.left - margin.right;
-            const height = chartHeight - margin.top - margin.bottom;
+            const width = actualWidth - margin.left - margin.right;
+            const height = actualHeight - margin.top - margin.bottom;
 
-            const xKey = config.mapping.key1.value;
-            const seriesKey = config.mapping.key3.value;
-            const yKey = config.mapping.key2.value; 
-            const tooltipKeys = config.mapping.key4;
-            
-            // Transform data for stacking
-            const { transformedData, seriesKeys } = transformDataForStacking(config.data, xKey, seriesKey, yKey); 
-
-            // Stack the transformed data
-            const series = d3.stack()
-                .keys(seriesKeys)
-                .value((d, key) => d[key])
-                (transformedData);
+            const primaryAxisKey = config.mapping.key1.value; // month
+            const valueAxisKey = config.mapping.key2.value; // sales
+            const seriesKey = config.mapping.key4.value; // product
+            const tooltipFields = config.mapping.key3;
+            const filteredData = config.data;
 
             const svg = container
                 .append('svg')
-                .attr('width', chartWidth)
-                .attr('height', chartHeight)
+                .attr('width', actualWidth)
+                .attr('height', actualHeight)
                 .append('g')
                 .attr('transform', `translate(${margin.left},${margin.top})`);
             
+            // Get all unique months and products
+            const primaryAxisDomain = Array.from(new Set(filteredData.map(d => d[primaryAxisKey])));
+            const seriesDomain = Array.from(new Set(filteredData.map(d => d[seriesKey])));
+
+            // Re-format the data for d3.stack() to be more robust
+            // This ensures every month has an entry for every product, even if sales are 0
+            const transformedData = primaryAxisDomain.map(month => {
+                const obj = {[primaryAxisKey]: month};
+                seriesDomain.forEach(series => {
+                    const dataPoint = filteredData.find(d => d[primaryAxisKey] === month && d[seriesKey] === series);
+                    obj[series] = dataPoint ? dataPoint[valueAxisKey] : 0;
+                });
+                return obj;
+            });
+            
             const x = d3.scaleBand()
-                .domain(transformedData.map(d => d[xKey]))
+                .domain(primaryAxisDomain)
                 .range([0, width])
                 .padding(0.1);
 
+            const stack = d3.stack()
+                .keys(seriesDomain);
+            
+            const stackedData = stack(transformedData);
+            const maxStackedValue = d3.max(stackedData[stackedData.length - 1], d => d[1]);
+
             const y = d3.scaleLinear()
-                .domain([0, d3.max(series, d => d3.max(d, e => e[1]))])
+                .domain([0, maxStackedValue * 1.1])
                 .nice()
                 .range([height, 0]);
-
-            const color = d3.scaleOrdinal()
-                .domain(seriesKeys)
-                .range(config.mapping.colors);
             
+            const color = d3.scaleOrdinal(config.mapping.colors || d3.schemeCategory10)
+                .domain(seriesDomain);
+
             const chartTooltip = getOrCreateTooltip();
 
             svg.append('g')
                 .selectAll('g')
-                .data(series)
+                .data(stackedData)
                 .join('g')
                 .attr('fill', d => color(d.key))
                 .selectAll('rect')
                 .data(d => d)
                 .join('rect')
-                .attr('x', d => x(d.data[xKey]))
+                .attr('x', d => x(d.data[primaryAxisKey]))
                 .attr('y', d => y(d[1]))
                 .attr('height', d => y(d[0]) - y(d[1]))
                 .attr('width', x.bandwidth())
                 .on("mouseover", function(event, d) {
-                    const dataPoint = {
-                        [xKey]: d.data[xKey],
-                        [seriesKey]: d3.select(this.parentNode).datum().key,
-                        [yKey]: d[1] - d[0] // Calculate the individual segment's value
+                    // Extract the data for the specific hovered segment
+                    const dataObjectForTooltip = {
+                        [primaryAxisKey]: d.data[primaryAxisKey],
+                        [seriesKey]: d.key,
+                        [valueAxisKey]: d.data[d.key]
                     };
                     chartTooltip.style("opacity", 1)
-                        .html(generateTooltipContent(dataPoint, tooltipKeys))
+                        .html(generateTooltipContent(dataObjectForTooltip, tooltipFields))
                         .style("left", (event.pageX + 10) + "px")
                         .style("top", (event.pageY - 28) + "px");
                 })
@@ -657,80 +894,125 @@
             // Add Y-axis
             svg.append('g')
                 .call(d3.axisLeft(y));
+
+            if (config.mapping.legend.enabled) {
+                drawChartLegend(`#${legendId}`, color, config.mapping.key4.label);
+            }
         }
 
-        // Function to create a Stacked Area Chart
+        // --- Stacked Area Chart Function ---
         function createStackedAreaChart(config) {
             const containerId = 'stackedAreaChartContainer';
+            const legendId = 'stackedAreaChartLegend';
             const container = d3.select(`#${containerId}`);
             container.selectAll('*').remove();
 
-            // Get dimensions and keys from the mapping configuration
-            const chartWidth = config.mapping.dimensions.width;
-            const chartHeight = config.mapping.dimensions.height;
+            const chartContainerElement = document.getElementById(containerId);
+            const actualWidth = chartContainerElement.clientWidth;
+            const actualHeight = config.mapping.dimensions.height;
+
             const margin = { top: 20, right: 20, bottom: 40, left: 60 };
-            const width = chartWidth - margin.left - margin.right;
-            const height = chartHeight - margin.top - margin.bottom;
+            const width = actualWidth - margin.left - margin.right;
+            const height = actualHeight - margin.top - margin.bottom;
 
-            const xKey = config.mapping.key1.value;
-            const seriesKey = config.mapping.key3.value;
-            const yKey = config.mapping.key2.value; 
-            const tooltipKeys = config.mapping.key4;
-            
-            // Transform data for stacking
-            const { transformedData, seriesKeys } = transformDataForStacking(config.data, xKey, seriesKey, yKey); 
-
-            // Stack the transformed data
-            const series = d3.stack()
-                .keys(seriesKeys)
-                .value((d, key) => d[key])
-                (transformedData);
+            const primaryAxisKey = config.mapping.key1.value; // month
+            const valueAxisKey = config.mapping.key2.value; // sales
+            const seriesKey = config.mapping.key4.value; // product
+            const tooltipFields = config.mapping.key3;
+            const filteredData = config.data;
 
             const svg = container
                 .append('svg')
-                .attr('width', chartWidth)
-                .attr('height', chartHeight)
+                .attr('width', actualWidth)
+                .attr('height', actualHeight)
                 .append('g')
                 .attr('transform', `translate(${margin.left},${margin.top})`);
+            
+            // Get all unique months and products
+            const primaryAxisDomain = Array.from(new Set(filteredData.map(d => d[primaryAxisKey])));
+            const seriesDomain = Array.from(new Set(filteredData.map(d => d[seriesKey])));
+            
+            // Re-format the data for d3.stack()
+            const transformedData = primaryAxisDomain.map(month => {
+                const obj = {[primaryAxisKey]: month};
+                seriesDomain.forEach(series => {
+                    const dataPoint = filteredData.find(d => d[primaryAxisKey] === month && d[seriesKey] === series);
+                    obj[series] = dataPoint ? dataPoint[valueAxisKey] : 0;
+                });
+                return obj;
+            });
+
+            const stack = d3.stack()
+                .keys(seriesDomain)
+                .order(d3.stackOrderNone)
+                .offset(d3.stackOffsetNone);
+
+            const stackedData = stack(transformedData);
+            const maxStackedValue = d3.max(stackedData[stackedData.length - 1], d => d[1]);
 
             const x = d3.scalePoint()
-                .domain(transformedData.map(d => d[xKey]))
-                .range([0, width]);
+                .domain(primaryAxisDomain)
+                .range([0, width])
+                .padding(0.5);
 
             const y = d3.scaleLinear()
-                .domain([0, d3.max(series, d => d3.max(d, e => e[1]))])
+                .domain([0, maxStackedValue * 1.1])
                 .nice()
                 .range([height, 0]);
 
-            const color = d3.scaleOrdinal()
-                .domain(seriesKeys)
-                .range(config.mapping.colors);
+            const color = d3.scaleOrdinal(config.mapping.colors || d3.schemeCategory10)
+                .domain(seriesDomain);
 
             const area = d3.area()
-                .x(d => x(d.data[xKey]))
+                .x(d => x(d.data[primaryAxisKey]))
                 .y0(d => y(d[0]))
-                .y1(d => y(d[1]));
-
+                .y1(d => y(d[1]))
+                .curve(d3.curveMonotoneX);
+            
             const chartTooltip = getOrCreateTooltip();
+            
+            // Append the areas
+            svg.append("g")
+                .selectAll("path")
+                .data(stackedData)
+                .join("path")
+                .attr("fill", ({key}) => color(key))
+                .attr("d", area);
 
-            svg.append('g')
-                .selectAll('path')
-                .data(series)
-                .join('path')
-                .attr('fill', d => color(d.key))
-                .attr('d', area)
-                .on("mouseover", function(event, d) {
-                    const seriesTotal = d3.sum(d, p => p[1] - p[0]); 
+            // Create a group for the hover rectangles
+            const focusGroup = svg.append("g")
+                .style("pointer-events", "all");
 
+            // Create invisible rectangles to act as hover targets for each month
+            focusGroup.selectAll("rect")
+                .data(primaryAxisDomain)
+                .join("rect")
+                .attr("x", d => x(d) - 10) // Fixed width for simplicity and to center it
+                .attr("y", 0)
+                .attr("width", 20) // Fixed width
+                .attr("height", height)
+                .attr("fill", "transparent")
+                .on("mouseover", function(event, month) {
+                    // Find all data points for this month
+                    const monthData = filteredData.filter(d => d[primaryAxisKey] === month);
+                    let tooltipHtml = '';
+                    monthData.forEach(d => {
+                        const dataObjectForTooltip = {
+                            [primaryAxisKey]: d[primaryAxisKey],
+                            [seriesKey]: d[seriesKey],
+                            [valueAxisKey]: d[valueAxisKey]
+                        };
+                        tooltipHtml += generateTooltipContent(dataObjectForTooltip, tooltipFields);
+                    });
                     chartTooltip.style("opacity", 1)
-                        .html(`<div><strong>${config.mapping.key3.label}</strong>: ${d.key}</div>
-                               <div><strong>${config.mapping.key2.label}</strong>: ${formatNumber(seriesTotal, "$0,0")}</div>`)
+                        .html(tooltipHtml)
                         .style("left", (event.pageX + 10) + "px")
                         .style("top", (event.pageY - 28) + "px");
                 })
                 .on("mouseout", function() {
                     chartTooltip.style("opacity", 0);
                 });
+
 
             // Add X-axis
             svg.append('g')
@@ -740,79 +1022,94 @@
             // Add Y-axis
             svg.append('g')
                 .call(d3.axisLeft(y));
+
+            if (config.mapping.legend.enabled) {
+                drawChartLegend(`#${legendId}`, color, config.mapping.key4.label);
+            }
         }
 
-        // Function to create a Grouped Bar Chart
+        // --- Grouped Bar Chart Function ---
         function createGroupedBarChart(config) {
             const containerId = 'groupedBarChartContainer';
+            const legendId = 'groupedBarChartLegend';
             const container = d3.select(`#${containerId}`);
             container.selectAll('*').remove();
 
-            // Get dimensions and keys from the mapping configuration
-            const chartWidth = config.mapping.dimensions.width;
-            const chartHeight = config.mapping.dimensions.height;
-            const margin = { top: 20, right: 20, bottom: 40, left: 60 };
-            const width = chartWidth - margin.left - margin.right;
-            const height = chartHeight - margin.top - margin.bottom;
+            const chartContainerElement = document.getElementById(containerId);
+            const actualWidth = chartContainerElement.clientWidth;
+            const actualHeight = config.mapping.dimensions.height;
 
-            const xKey = config.mapping.key1.value;
-            const yKey = config.mapping.key2.value;
-            const seriesKey = config.mapping.key3.value;
-            const tooltipKeys = config.mapping.key4;
-            
+            const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+            const width = actualWidth - margin.left - margin.right;
+            const height = actualHeight - margin.top - margin.bottom;
+
+            const primaryAxisKey = config.mapping.key1.value; // month
+            const valueAxisKey = config.mapping.key2.value; // sales
+            const seriesKey = config.mapping.key4.value; // product
+            const tooltipFields = config.mapping.key3;
+            const filteredData = config.data;
+
             const svg = container
                 .append('svg')
-                .attr('width', chartWidth)
-                .attr('height', chartHeight)
+                .attr('width', actualWidth)
+                .attr('height', actualHeight)
                 .append('g')
                 .attr('transform', `translate(${margin.left},${margin.top})`);
-            
+
+            // Group data by primary key (month) and then by series key (product)
+            const groupedData = d3.group(filteredData, d => d[primaryAxisKey]);
+            const primaryAxisDomain = Array.from(groupedData.keys());
+            const seriesDomain = Array.from(new Set(filteredData.map(d => d[seriesKey])));
+
             const x0 = d3.scaleBand()
-                .domain(Array.from(new Set(config.data.map(d => d[xKey]))))
+                .domain(primaryAxisDomain)
                 .range([0, width])
                 .paddingInner(0.1);
 
             const x1 = d3.scaleBand()
-                .domain(Array.from(new Set(config.data.map(d => d[seriesKey]))))
+                .domain(seriesDomain)
                 .range([0, x0.bandwidth()])
                 .padding(0.05);
 
             const y = d3.scaleLinear()
-                .domain([0, d3.max(config.data, d => d[yKey])])
+                .domain([0, d3.max(filteredData, d => d[valueAxisKey]) * 1.1])
                 .nice()
                 .range([height, 0]);
 
-            const color = d3.scaleOrdinal()
-                .domain(Array.from(new Set(config.data.map(d => d[seriesKey]))))
-                .range(config.mapping.colors);
-
+            const color = d3.scaleOrdinal(config.mapping.colors || d3.schemeCategory10)
+                .domain(seriesDomain);
+            
             const chartTooltip = getOrCreateTooltip();
 
-            const groupedData = d3.group(config.data, d => d[xKey]);
-
-            svg.append('g')
-                .selectAll('g')
-                .data(Array.from(groupedData))
-                .join('g')
-                .attr('transform', d => `translate(${x0(d[0])},0)`)
-                .selectAll('rect')
-                .data(d => d[1])
-                .join('rect')
-                .attr('x', d => x1(d[seriesKey]))
-                .attr('y', d => y(d[yKey]))
-                .attr('width', x1.bandwidth())
-                .attr('height', d => height - y(d[yKey]))
-                .attr('fill', d => color(d[seriesKey]))
+            svg.append("g")
+                .selectAll("g")
+                .data(primaryAxisDomain)
+                .join("g")
+                .attr("transform", d => `translate(${x0(d)},0)`)
+                .selectAll("rect")
+                .data(d => {
+                    const dataForMonth = groupedData.get(d) || [];
+                    return seriesDomain.map(series => {
+                        const seriesData = dataForMonth.find(item => item[seriesKey] === series);
+                        return seriesData || {[primaryAxisKey]: d, [seriesKey]: series, [valueAxisKey]: 0};
+                    });
+                })
+                .join("rect")
+                .attr("x", d => x1(d[seriesKey]))
+                .attr("y", d => y(d[valueAxisKey]))
+                .attr("width", x1.bandwidth())
+                .attr("height", d => height - y(d[valueAxisKey]))
+                .attr("fill", d => color(d[seriesKey]))
                 .on("mouseover", function(event, d) {
                     chartTooltip.style("opacity", 1)
-                        .html(generateTooltipContent(d, tooltipKeys))
+                        .html(generateTooltipContent(d, tooltipFields))
                         .style("left", (event.pageX + 10) + "px")
                         .style("top", (event.pageY - 28) + "px");
                 })
                 .on("mouseout", function() {
                     chartTooltip.style("opacity", 0);
                 });
-            
+
             // Add X-axis
             svg.append('g')
                 .attr('transform', `translate(0,${height})`)
@@ -821,79 +1118,83 @@
             // Add Y-axis
             svg.append('g')
                 .call(d3.axisLeft(y));
+
+            if (config.mapping.legend.enabled) {
+                drawChartLegend(`#${legendId}`, color, config.mapping.key4.label);
+            }
         }
 
-        // Function to create a Line Chart
+        // --- Line Chart Function ---
         function createLineChart(config) {
             const containerId = 'lineChartContainer';
+            const legendId = 'lineChartLegend';
             const container = d3.select(`#${containerId}`);
             container.selectAll('*').remove();
 
-            const chartWidth = config.mapping.dimensions.width;
-            const chartHeight = config.mapping.dimensions.height;
-            const margin = { top: 20, right: 20, bottom: 40, left: 60 };
-            const width = chartWidth - margin.left - margin.right;
-            const height = chartHeight - margin.top - margin.bottom;
+            const chartContainerElement = document.getElementById(containerId);
+            const actualWidth = chartContainerElement.clientWidth;
+            const actualHeight = config.mapping.dimensions.height;
 
-            const xKey = config.mapping.key1.value;
-            const yKey = config.mapping.key2.value;
-            const seriesKey = config.mapping.key3.value;
-            const tooltipKeys = config.mapping.key4;
+            const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+            const width = actualWidth - margin.left - margin.right;
+            const height = actualHeight - margin.top - margin.bottom;
+
+            const primaryAxisKey = config.mapping.key1.value; // month
+            const valueAxisKey = config.mapping.key2.value; // sales
+            const seriesKey = config.mapping.key4.value; // product
+            const tooltipFields = config.mapping.key3;
+            const filteredData = config.data;
 
             const svg = container
                 .append('svg')
-                .attr('width', chartWidth)
-                .attr('height', chartHeight)
+                .attr('width', actualWidth)
+                .attr('height', actualHeight)
                 .append('g')
                 .attr('transform', `translate(${margin.left},${margin.top})`);
-
-            // Group data by seriesKey for multiple lines
-            const dataGroupedBySeries = d3.group(config.data, d => d[seriesKey]);
-            const seriesNames = Array.from(dataGroupedBySeries.keys());
-            const xDomain = Array.from(new Set(config.data.map(d => d[xKey]))).sort(); 
-
+            
+            const primaryAxisDomain = Array.from(new Set(filteredData.map(d => d[primaryAxisKey])));
+            const seriesDomain = Array.from(new Set(filteredData.map(d => d[seriesKey])));
+            
+            const groupedData = d3.group(filteredData, d => d[seriesKey]);
+            
             const x = d3.scalePoint()
-                .domain(xDomain)
+                .domain(primaryAxisDomain)
                 .range([0, width]);
 
             const y = d3.scaleLinear()
-                .domain([0, d3.max(config.data, d => d[yKey])])
+                .domain([0, d3.max(filteredData, d => d[valueAxisKey]) * 1.1])
                 .nice()
                 .range([height, 0]);
 
-            const color = d3.scaleOrdinal()
-                .domain(seriesNames)
-                .range(config.mapping.colors);
+            const color = d3.scaleOrdinal(config.mapping.colors || d3.schemeCategory10)
+                .domain(seriesDomain);
 
             const line = d3.line()
-                .x(d => x(d[xKey]))
-                .y(d => y(d[yKey]));
+                .x(d => x(d[primaryAxisKey]))
+                .y(d => y(d[valueAxisKey]))
+                .curve(d3.curveMonotoneX);
 
             const chartTooltip = getOrCreateTooltip();
 
-            // Draw lines for each series
-            svg.selectAll(".line")
-                .data(dataGroupedBySeries)
+            svg.selectAll("path")
+                .data(groupedData)
                 .join("path")
                 .attr("fill", "none")
-                .attr("stroke", d => color(d[0])) 
-                .attr("stroke-width", 2.5)
-                .attr("d", d => line(d[1].sort((a, b) => xDomain.indexOf(a[xKey]) - xDomain.indexOf(b[xKey])))); 
+                .attr("stroke", d => color(d[0]))
+                .attr("stroke-width", 2)
+                .attr("d", d => line(d[1]));
 
-            // Add circles for each data point
-            svg.selectAll(".dot")
-                .data(config.data)
-                .join("circle")
-                .attr("class", "dot")
-                .attr("cx", d => x(d[xKey]))
-                .attr("cy", d => y(d[yKey]))
-                .attr("r", 4)
+            // Add dots to the lines
+            svg.selectAll("dot")
+                .data(filteredData)
+                .enter().append("circle")
+                .attr("r", 5)
+                .attr("cx", d => x(d[primaryAxisKey]))
+                .attr("cy", d => y(d[valueAxisKey]))
                 .attr("fill", d => color(d[seriesKey]))
-                .attr("stroke", "white")
-                .attr("stroke-width", 1.5)
                 .on("mouseover", function(event, d) {
                     chartTooltip.style("opacity", 1)
-                        .html(generateTooltipContent(d, tooltipKeys))
+                        .html(generateTooltipContent(d, tooltipFields))
                         .style("left", (event.pageX + 10) + "px")
                         .style("top", (event.pageY - 28) + "px");
                 })
@@ -909,95 +1210,69 @@
             // Add Y-axis
             svg.append('g')
                 .call(d3.axisLeft(y));
-        }
 
-        // Function to render charts for the active section
-        function renderChartsForSection(sectionId) {
-            // Get all chart containers in the active section
-            const containers = document.querySelectorAll(`#${sectionId} .chart-container, #${sectionId} .waffle-grid`);
-            containers.forEach(container => {
-                // Remove existing SVG to prevent duplicates
-                d3.select(container).selectAll('*').remove();
-            });
-
-            switch (sectionId) {
-                case 'section1':
-                    createBarChart(chartConfig1);
-                    createDotPlot(chartConfig1);
-                    createPieChart(chartConfig1); 
-                    createWaffleChart(chartConfig1); 
-                    break;
-                case 'section3':
-                    createStackedBarChart(chartConfig3);
-                    createStackedAreaChart(chartConfig3); 
-                    createGroupedBarChart(chartConfig3); 
-                    createLineChart(chartConfig3); 
-                    break;
+            if (config.mapping.legend.enabled) {
+                drawChartLegend(`#${legendId}`, color, config.mapping.key4.label);
             }
         }
-        
-        // Function to set up tabs and event listeners
-        function setupTabs() {
-            const tabs = document.querySelectorAll('.tab-button');
-            const contents = document.querySelectorAll('.tab-content');
 
-            tabs.forEach(button => {
-                button.addEventListener('click', () => {
-                    const targetId = button.dataset.target;
-
-                    // Remove active class from all buttons and add to the current button
-                    tabs.forEach(btn => {
-                        btn.classList.remove('active-button');
-                        // Ensure inactive buttons revert to default Tailwind styles
-                        btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300', 'focus:ring-gray-300');
-                        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg', 'transform', 'scale-105', 'focus:ring-blue-300');
-                    });
-                    
-                    button.classList.add('active-button');
-                    // Ensure active button uses its specific styles
-                    button.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300', 'focus:ring-gray-300');
-                    button.classList.add('bg-blue-600', 'text-white', 'shadow-lg', 'transform', 'scale-105', 'focus:ring-blue-300');
-
-
-                    // Hide all content and show only the target content
-                    contents.forEach(content => content.classList.add('hidden'));
-                    document.getElementById(targetId).classList.remove('hidden');
-
-                    // Render charts for the active section
-                    renderChartsForSection(targetId);
+        // --- Event Listeners and Initial Setup ---
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Function to handle tab switching and chart rendering
+            function showTab(tabId) {
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.add('hidden');
                 });
+                // Remove active class from all buttons
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active-button');
+                    btn.classList.remove('bg-blue-500', 'hover:bg-blue-600', 'focus:ring-blue-300');
+                    btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300', 'focus:ring-gray-300');
+                });
+
+                // Show the selected tab content
+                const activeTab = document.getElementById(tabId);
+                if (activeTab) {
+                    activeTab.classList.remove('hidden');
+                }
+
+                // Add active class to the clicked button
+                const activeButton = document.querySelector(`.tab-button[data-target="${tabId}"]`);
+                if (activeButton) {
+                    activeButton.classList.add('active-button');
+                    activeButton.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300', 'focus:ring-blue-300');
+                    activeButton.classList.add('bg-blue-500', 'text-white', 'hover:bg-blue-600', 'focus:ring-blue-300');
+                }
+            }
+
+            // Event listeners for tab buttons
+            document.getElementById('button1').addEventListener('click', () => {
+                showTab('section1');
+                // Render charts for set 1
+                createBarChart(chartSet1Config);
+                createDotPlot(chartSet1Config);
+                createPieChart(chartSet1Config);
+                createWaffleChart(chartSet1Config);
             });
 
-            // Click the first button on initial load
-            document.getElementById('button1').click();
-        }
+            document.getElementById('button2').addEventListener('click', () => {
+                showTab('section3');
+                // Render charts for set 2
+                createStackedBarChart(chartSet2Config);
+                createStackedAreaChart(chartSet2Config);
+                createGroupedBarChart(chartSet2Config);
+                createLineChart(chartSet2Config);
+            });
 
-        // Function to toggle the display of the JSON mapping
-        function toggleMapping(wrapperId) {
-            const wrapper = document.getElementById(wrapperId);
-            wrapper.classList.toggle('hidden');
-        }
-        
-        // Redraw charts on window resize to ensure responsiveness
-        function handleResize() {
-            const activeTab = document.querySelector('.tab-content:not(.hidden)');
-            if (activeTab) {
-                renderChartsForSection(activeTab.id);
-            }
-        }
-
-        // Initialize the app on window load
-        window.onload = function() {
-            const mappingJson1 = JSON.stringify(chartConfig1.mapping, null, 2);
-            const mappingJson3 = JSON.stringify(chartConfig3.mapping, null, 2); 
-
-            document.getElementById('mapping-display-1').textContent = mappingJson1;
-            document.getElementById('mapping-display-3').textContent = mappingJson3;
-
-            setupTabs();
-            // Add event listener for window resizing
-            window.addEventListener('resize', handleResize);
-        };
+            // Initial setup: Show the first tab and render its charts
+            showTab('section1');
+            createBarChart(chartSet1Config);
+            createDotPlot(chartSet1Config);
+            createPieChart(chartSet1Config);
+            createWaffleChart(chartSet1Config);
+        });
     </script>
 </body>
 </html>
